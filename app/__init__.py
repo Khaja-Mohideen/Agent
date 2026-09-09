@@ -1,50 +1,22 @@
-from flask import Blueprint, request, jsonify
-
-from app.youtube.play import create_youtube_url
-
-
-youtube_bp = Blueprint(
-    "youtube",
-    __name__
-)
+from flask import Flask, render_template
+from app.youtube import youtube_bp
 
 
-@youtube_bp.route(
-    "/play",
-    methods=["POST"]
-)
-def play():
+def create_app():
 
-    data = request.get_json(
-        silent=True
-    ) or {}
+    app = Flask(__name__)
 
-    command = data.get(
-        "command",
-        ""
-    ).strip()
-
-    if not command:
-
-        return jsonify({
-            "success": False,
-            "message": "Song name is required"
-        }), 400
-
-    url = create_youtube_url(
-        command
+    app.register_blueprint(
+        youtube_bp,
+        url_prefix="/youtube"
     )
 
-    if not url:
+    @app.route("/")
+    def home():
+        return render_template("index.html")
 
-        return jsonify({
-            "success": False,
-            "message": "Could not find the song"
-        }), 404
+    @app.route("/html")
+    def html():
+        return render_template("index.html")
 
-    return jsonify({
-        "success": True,
-        "type": "youtube",
-        "query": command,
-        "url": url
-    })
+    return app
