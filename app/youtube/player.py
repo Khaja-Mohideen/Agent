@@ -1,75 +1,50 @@
-import re 
-import urllib.parse 
-import urllib.request 
+from flask import Blueprint, request, jsonify
+
+from app.youtube.player import create_youtube_url
 
 
-def get_video(query):
-
-  try:
-    encoded = urllib.parse.quote(query)
-
-url = (
-  "https://www.youtube.com/results"
-  "?search_query=" + encoded 
+youtube_bp = Blueprint(
+    "youtube",
+    __name__
 )
 
-request = urllib.request.Request(
-  url,
-  headers={
-    "User-agent": "Mozilla/5.0"
-  }
+
+@youtube_bp.route(
+    "/play",
+    methods=["POST"]
 )
-data = urllib.request.urlopen(
-  request,
-  timeout=5
-).read().decode("utf-8", errors="ignore")
+def play():
 
-ids = re.findall(
-  r'"videoId":"([^"]+)"',
-  data
-)
-return ids[0] if ids else None 
+    data = request.get_json(
+        silent=True
+    ) or {}
 
-except Execption:
-return None 
+    command = data.get(
+        "command",
+        ""
+    ).strip()
 
+    if not command:
 
+        return jsonify({
+            "success": False,
+            "message": "Song name is required"
+        }), 400
 
+    url = create_youtube_url(
+        command
+    )
 
-def create_youtube_url(command):
+    if not url:
 
-  text = command.lower().strip()
+        return jsonify({
+            "success": False,
+            "message": "Could not find the song"
+        }), 404
 
-patterns = [
-  r"play\s+song\s+(.+)"'
-  r"play\s+music\s+(.+)",
-  r"play\s+(.+)",
-  r"youtube\s+(.+)"
-]
-
-query = command 
-for pattern in patterns:
-
-  match = re.search(
-    pattern,
-    texT
-
-  )
-
-if match:
-
-  query = match.group(1)
-  break 
-
-query = query.strip()
-
-video_id = get_vid(query)
-
-if not video_id:
-  return None 
-
-return(
-  "https://www.youtube.com/embed/"
-  + video_id
-  + "?autoplay=1&mute=0"
-)
+    return jsonify({
+        "success": True,
+        "type": "youtube",
+        "query": command,
+        "url": url
+    })
