@@ -24,3 +24,13 @@ Rules:
 - Do not invent names, dates, prices, companies, attachments, or facts.
 - Keep the email natural and concise.
 - Include an appropriate greeting and closing.
+
+Output exactly:
+
+SUBJECT: <subject>
+BODY:
+<email body>
+
+User command:
+{command}
+"""
