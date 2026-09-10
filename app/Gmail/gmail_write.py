@@ -30,4 +30,4 @@ def create_gmail_url(subject="",body="", recipient=""):
   params = urllib.parse.urlencoder({
     "view" :"cm",
     "fs":"1",
-    "to":"+-
+    "to":"recipient"
