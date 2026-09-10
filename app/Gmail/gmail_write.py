@@ -28,4 +28,6 @@ if match:
 
 def create_gmail_url(subject="",body="", recipient=""):
   params = urllib.parse.urlencoder({
-    "view
+    "view" :"cm",
+    "fs":"1",
+    "to":"+-
