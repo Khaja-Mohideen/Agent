@@ -40,4 +40,39 @@ def create_app():
         return jsonify({
             "status" : "ok",
            
-    return app
+#Gmail AI Agent
+@app.route("/agent", methods=["POST"])
+ def agent():
+     try: 
+            data = request.get_json(silent=True) or {}
+            command = data.get("command", "").strip()
+
+            if not command:
+            return jsonify({{
+            "success":False,
+            "message": "Command is required"
+            }), 400
+         
+recipient = extract_email_with gemini_(command)
+
+return jsonify({
+    "success": True,
+    "type": "email",
+    "email_generated": True,
+    "reciepiennt": recipient,
+    "subject": email["subject"],
+    "gmail_url": create_gmail_url(
+        email["subject"]
+        email["body"]
+        recipient 
+
+    )
+})
+
+except Exception as e:
+
+return jsonify({
+    "successs": False,
+    "message": str(e)
+}), 500
+return app
