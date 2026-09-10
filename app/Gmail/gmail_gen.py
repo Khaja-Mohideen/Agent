@@ -34,3 +34,7 @@ BODY:
 User command:
 {command}
 """
+
+url = (
+  f"https://generativelanguage.googleapis.com/"
+  f"v1beta//models/(MODEL):generateContent" 
